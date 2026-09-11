@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glitchy Checkout - PlayerZero Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .product {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+
+        .product-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .product-price {
+            color: #667eea;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .product-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .cart-section {
+            background: #f0f4ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .cart-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .cart-items {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .cart-count {
+            background: white;
+            border-radius: 4px;
+            padding: 8px 12px;
+            display: inline-block;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-add:active {
+            transform: translateY(0);
+        }
+
+        .btn-checkout {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-checkout:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-checkout:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status-message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .status-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .status-error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+
+        .status-info {
+            background: #bee3f8;
+            color: #2c5282;
+            border: 1px solid #90cdf4;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .debug-info {
+            margin-top: 20px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #666;
+            font-family: monospace;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .debug-label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 Glitchy Checkout</h1>
+        <p class="subtitle">PlayerZero Reverse KT Demo App</p>
+
+        <div class="product">
+            <div class="product-name">Premium Widget Pro</div>
+            <div class="product-price">$49.99</div>
+            <div class="product-description">
+                The ultimate widget for all your widget needs. Features advanced widget technology with integrated widget systems.
+            </div>
+        </div>
+
+        <div class="cart-section">
+            <div class="cart-title">🛍️ Shopping Cart</div>
+            <div class="cart-items">Items in cart:</div>
+            <div class="cart-count" id="cart-count">0</div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn-add" id="add-btn">Add to Cart</button>
+            <button class="btn-checkout" id="checkout-btn">Checkout</button>
+        </div>
+
+        <div id="status-message"></div>
+
+        <div class="debug-info">
+            <div class="debug-label">Debug Console</div>
+            <div id="debug-log"></div>
+        </div>
+    </div>
+
+    <!-- PlayerZero SDK -->
+    <script>
+        // PlayerZero Configuration
+        // Initialize PlayerZero with your project ID
+        window.PlayerZero = window.PlayerZero || {
+            projectId: 'glitchy-checkout-demo',
+            isInitialized: false
+        };
+
+        // Initialize PlayerZero
+        if (!window.PlayerZero.isInitialized) {
+            window.PlayerZero.isInitialized = true;
+            console.log('[PlayerZero] Initialized with project ID:', window.PlayerZero.projectId);
+            window.PZ_DEBUG = true; // Enable debug mode for demo
+        }
+    </script>
+
+    <script src="app.js"></script>
+</body>
+</html>
