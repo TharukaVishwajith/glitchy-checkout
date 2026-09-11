@@ -43,32 +43,120 @@
             font-size: 14px;
         }
 
+        .section-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .catalog {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
         .product {
             background: #f8f9fa;
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            border: 1px solid #e9ecef;
+            padding: 16px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .product:hover {
+            border-color: #b7c1f5;
+            transform: translateY(-2px);
+        }
+
+        .product.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+            box-shadow: 0 6px 14px rgba(102, 126, 234, 0.2);
         }
 
         .product-name {
             font-weight: bold;
-            font-size: 18px;
+            font-size: 15px;
             color: #333;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .product-price {
             color: #667eea;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .product-description {
             color: #666;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .discount-section {
+            background: #fffaf0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid #ed8936;
+        }
+
+        .discount-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .discount-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
             font-size: 14px;
-            line-height: 1.5;
+            text-transform: uppercase;
+        }
+
+        .discount-input:focus {
+            outline: none;
+            border-color: #ed8936;
+        }
+
+        .btn-discount {
+            flex: 0 0 auto;
+            background: #ed8936;
+            color: white;
+        }
+
+        .btn-discount:hover {
+            background: #dd6b20;
+        }
+
+        .cart-lines {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .cart-totals {
+            font-size: 13px;
+            color: #444;
+            margin-top: 10px;
+        }
+
+        .cart-total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+        }
+
+        .cart-total-row.grand {
+            font-weight: bold;
+            color: #333;
+            border-top: 1px solid #d5ddf7;
+            margin-top: 6px;
+            padding-top: 6px;
         }
 
         .cart-section {
@@ -217,11 +305,14 @@
         <h1>🛒 Glitchy Checkout</h1>
         <p class="subtitle">PlayerZero Reverse KT Demo App</p>
 
-        <div class="product">
-            <div class="product-name">Premium Widget Pro</div>
-            <div class="product-price">$49.99</div>
-            <div class="product-description">
-                The ultimate widget for all your widget needs. Features advanced widget technology with integrated widget systems.
+        <div class="section-title">📦 Product Catalog</div>
+        <div class="catalog" id="catalog"></div>
+
+        <div class="discount-section">
+            <div class="section-title">🏷️ Discount Code</div>
+            <div class="discount-row">
+                <input type="text" class="discount-input" id="discount-input" placeholder="e.g. SAVE10" autocomplete="off">
+                <button class="btn-discount" id="discount-btn">Apply</button>
             </div>
         </div>
 
@@ -229,6 +320,8 @@
             <div class="cart-title">🛍️ Shopping Cart</div>
             <div class="cart-items">Items in cart:</div>
             <div class="cart-count" id="cart-count">0</div>
+            <div class="cart-lines" id="cart-lines"></div>
+            <div class="cart-totals" id="cart-totals"></div>
         </div>
 
         <div class="buttons">
