@@ -1,0 +1,41 @@
+name: PlayerZero PR Review
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, synchronize]
+    branches: [main]
+
+jobs:
+  start-review:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start PlayerZero review
+        env:
+          PZ_TRIGGER_URL: ${{ secrets.PZ_TRIGGER_URL }}
+          PR_JSON: ${{ toJSON(github.event.pull_request) }}
+          EVENT_ACTION: ${{ github.event.action }}
+          REPO: ${{ github.repository }}
+        run: |
+          payload=$(jq -n \
+            --argjson pr "$PR_JSON" \
+            --arg action "$EVENT_ACTION" \
+            --arg repo "$REPO" \
+            '{
+               message: "Review pull request #\($pr.number) in \($repo): \($pr.title)",
+               event: "pull_request.\($action)",
+               repository: $repo,
+               pull_request: {
+                 number: $pr.number,
+                 url: $pr.html_url,
+                 title: $pr.title,
+                 author: $pr.user.login,
+                 head_branch: $pr.head.ref,
+                 base_branch: $pr.base.ref,
+                 draft: $pr.draft,
+                 head_sha: $pr.head.sha
+               }
+             }')
+          curl -sS --fail-with-body -X POST "$PZ_TRIGGER_URL" \
+            -H "Content-Type: application/json" \
+            -d "$payload"
