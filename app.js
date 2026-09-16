@@ -33,7 +33,7 @@ let cartCount = 0;
 let cartLines = {}; // productId -> quantity
 let selectedProductId = PRODUCTS[0].id;
 let appliedDiscount = null;
-let cart = null; // Bug 2: This will be null, causing TypeError when we try to access cart.items
+let cart = { items: [], total: 0 }; // Fixed: Initialize cart object properly
 
 // DOM Elements
 const catalogContainer = document.getElementById('catalog');
@@ -46,9 +46,6 @@ const cartLinesDisplay = document.getElementById('cart-lines');
 const cartTotalsDisplay = document.getElementById('cart-totals');
 const statusMessage = document.getElementById('status-message');
 const debugLog = document.getElementById('debug-log');
-
-// Initialize cart object (comment this out to trigger Bug 2)
-// cart = { items: [], total: 0 };
 
 // Debug logging function
 function log(message, type = 'info') {
@@ -306,25 +303,20 @@ async function applyDiscount() {
     }
 }
 
-// Bug 2: The JS Exception (Frontend Crash)
-// This function tries to access a property of null/undefined
+// Checkout function - now works without crashing
 function checkout() {
     checkoutBtn.disabled = true;
     showStatus('⏳ Processing checkout...', 'info');
     log('Checkout initiated');
 
     try {
-        // Bug 2: cart is null, accessing cart.items will throw TypeError
         if (cartCount === 0) {
             showStatus('❌ Your cart is empty!', 'error');
             log('Checkout failed: Empty cart', 'error');
             return;
         }
 
-        // THIS LINE WILL CRASH - cart is null
-        // TypeError: Cannot read property 'items' of null
-        const items = cart.items; // BUG 2 TRIGGER
-
+        const items = cart.items;
         log(`Processing ${items.length} items...`);
 
         // Simulate checkout delay
@@ -332,7 +324,7 @@ function checkout() {
             cartLines = {};
             appliedDiscount = null;
             updateCartDisplay();
-            showStatus('✅ Checkout successful! Thank you for your purchase.', 'success');
+            showStatus('�� Checkout successful! Thank you for your purchase.', 'success');
             log('Checkout completed successfully', 'success');
             checkoutBtn.disabled = false;
         }, 1500);
